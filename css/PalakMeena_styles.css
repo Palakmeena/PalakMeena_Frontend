@@ -1,13 +1,1293 @@
-/* Reset default spacing */
-* {
-    margin: 0;
-    padding: 0;
+/* ==========================================================
+   PalakMeena_styles.css
+   Personal Portfolio – CSS Styling Assignment
+   Author: Palak Meena
+
+   HOW THIS FILE IS ORGANISED:
+   1.  CSS Reset
+   2.  CSS Custom Properties (variables)
+   3.  Google Fonts import
+   4.  Base / Global styles
+   5.  Layout wrapper
+   6.  Header
+   7.  Navigation
+   8.  Sections (shared styles)
+   9.  About section
+   10. Skills section
+   11. Education table
+   12. Projects section
+   13. Contact form
+   14. Footer
+   15. Responsive media queries
+   ========================================================== */
+
+
+
+
+*, *::before, *::after {
+    margin: 0;          /* removes all default outer spacing */
+    padding: 0;         /* removes all default inner spacing */
     box-sizing: border-box;
+    /* box-sizing: border-box means: when I set width: 200px,
+       that 200px INCLUDES any padding and border I add.
+       Without this, padding and border are ADDED ON TOP of
+       the width, which makes sizing very hard to control. */
 }
 
-/* Base styling */
+html {
+    scroll-behavior: smooth;
+    /* When a nav link like <a href="#about"> is clicked,
+       the page scrolls smoothly instead of jumping instantly.
+       This is a pure UX improvement. */
+
+    font-size: 16px;
+  
+}
+
+
+   
+
+   /* CSS variables (also called custom properties) are declared
+   inside :root so they are available everywhere on the page.
+   :root refers to the <html> element — the topmost element. */
+
+   
+
+:root {
+    --color-bg:         #f7f4ef;   /* warm cream — main page background */
+    --color-surface:    #ffffff;   /* pure white — used for cards/sections */
+    --color-ink:        #1c1c1e;   /* near-black — headings and strong text */
+    --color-ink-light:  #4a4a4f;   /* dark grey — body paragraph text */
+    --color-accent:     #c0533a;   /* terracotta red — buttons, highlights, borders */
+    --color-accent-dim: #e8d5cf;   /* pale terracotta — hover backgrounds, soft highlights */
+    --color-border:     #e0dbd4;   /* light warm grey — used for borders and dividers */
+    --color-nav-bg:     #1c1c1e;   /* same as ink — dark background for navbar */
+    --color-nav-text:   #f7f4ef;   /* same as bg — light text on dark navbar */
+    --color-footer-bg:  #1c1c1e;   /* dark background for footer */
+
+    --font-heading: 'Playfair Display', Georgia, serif;
+    
+
+    --font-body:    'Source Serif 4', 'Georgia', serif;
+    
+
+    --font-mono:    'JetBrains Mono', 'Courier New', monospace;
+   
+
+    /* --- SPACING SCALE ---
+       Instead of writing random pixel values everywhere,
+       I use a consistent spacing scale based on rem units.
+       This keeps all spacing proportional and harmonious. */
+    --space-xs:  0.25rem;   /*  4px — tiny gaps, e.g. between label and input */
+    --space-sm:  0.5rem;    /*  8px — small gaps */
+    --space-md:  1rem;      /* 16px — standard spacing */
+    --space-lg:  2rem;      /* 32px — section padding, larger gaps */
+    --space-xl:  3.5rem;    /* 56px — large section margins */
+    --space-2xl: 5rem;      /* 80px — extra large (reserved for future use) */
+
+    /* --- SHADOWS ---
+       Box shadows add depth to cards and sections.
+       Format: offset-x | offset-y | blur-radius | color */
+    --shadow-card: 0 2px 12px rgba(28, 28, 30, 0.08);
+    /* Subtle shadow — used on section cards at rest */
+
+    --shadow-lift: 0 6px 24px rgba(28, 28, 30, 0.14);
+    /* Stronger shadow — used when hovering over project cards */
+
+    /* --- TRANSITION ---
+       A reusable transition value so all hover animations
+       feel consistent. 0.25s is fast enough to feel responsive
+       but slow enough to look smooth. */
+    --transition: 0.25s ease;
+}
+
+
+/* ----------------------------------------------------------
+   3. GOOGLE FONTS IMPORT
+
+   @import loads external fonts from Google's servers.
+   This must be at the TOP of the CSS file (or very early)
+   so the fonts are ready before the browser renders text.
+
+   I import three font families:
+   - Playfair Display (headings) in italic and bold weights
+   - Source Serif 4 (body text) in light, regular, semibold
+   - JetBrains Mono (labels, nav) in regular and medium
+   ---------------------------------------------------------- */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:wght@300;400;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+
+/* ----------------------------------------------------------
+   4. BASE / GLOBAL STYLES
+
+   These styles apply to the whole page.
+   Setting them here means I don't have to repeat them
+   in every individual section's CSS.
+   ---------------------------------------------------------- */
+
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
+    font-family: var(--font-body);
+    /* Sets the default font for everything on the page.
+       Individual elements can override this with their own font-family. */
+
+    background-color: var(--color-bg);
+    /* Warm cream background for the entire page */
+
+    color: var(--color-ink);
+    /* Default text color — near black. Individual elements
+       like <p> override this with a lighter grey. */
+
+    line-height: 1.75;
+    /* Controls the vertical space between lines of text.
+       1.75 means each line is 1.75x the font size in height.
+       This makes paragraphs easier and more comfortable to read. */
+
+    font-weight: 300;
+    /* Light font weight by default — gives a clean, modern feel.
+       Headings and labels override this with heavier weights. */
+}
+
+h1, h2, h3, h4 {
+    font-family: var(--font-heading);
+    /* All headings use Playfair Display instead of the body font */
+
+    font-weight: 600;
+    /* Semi-bold — heavier than body text so headings stand out */
+
+    color: var(--color-ink);
+    /* Headings use the darkest color for maximum contrast */
+
+    line-height: 1.2;
+    /* Tighter line-height for headings — they usually don't wrap,
+       and tighter spacing looks more polished for large text */
+}
+
+p {
+    color: var(--color-ink-light);
+    /* Paragraphs use a slightly lighter grey than headings —
+       creates visual hierarchy: heading is darker/stronger,
+       body text is softer */
+
+    margin-bottom: var(--space-md);
+    /* Adds space below each paragraph so they don't crowd together */
+}
+
+a {
+    color: var(--color-accent);
+    /* All links default to the terracotta accent color */
+
+    text-decoration: none;
+    /* Removes the default underline from links */
+
+    transition: color var(--transition);
+    /* Smoothly animates the color change on hover
+       instead of an instant jump */
+}
+
+a:hover {
+    color: var(--color-ink);
+    /* Links turn dark/black when hovered — clear visual feedback */
+}
+
+ul {
+    list-style: none;
+    /* Removes bullet points from all lists globally.
+       Specific lists (like project bullet points) re-add
+       their own style using list-style: disc */
+
+    padding: 0;
+    /* Removes default left indentation that browsers add to lists */
+}
+
+img {
+    display: block;
+    /* Images are inline by default (like text), which causes
+       a small gap below them. display: block removes that gap. */
+
+    max-width: 100%;
+    /* Prevents images from overflowing their container.
+       If the container is 300px wide, the image won't exceed 300px. */
+}
+
+hr {
+    border: none;
+    /* Removes the default 3D border that browsers put on <hr> */
+
+    border-top: 1px solid var(--color-border);
+    /* Replaces it with a clean, thin line in our border color */
+
+    margin: var(--space-lg) 0;
+    /* Adds space above and below the divider line */
+}
+
+
+/* ----------------------------------------------------------
+   5. LAYOUT WRAPPER
+
+   <main> wraps all the page sections. By setting a max-width,
+   I prevent the content from stretching too wide on large monitors
+   (which makes text hard to read). margin: 0 auto centers it.
+   ---------------------------------------------------------- */
+
+main {
+    max-width: 860px;
+    /* Content won't get wider than 860px even on a 4K screen */
+
+    margin: 0 auto;
+    /* 0 top/bottom margin, auto left/right margin.
+       auto means "split remaining space equally on both sides"
+       which centers the element horizontally. */
+
+    padding: var(--space-lg) var(--space-lg);
+    /* Adds inner space so content doesn't touch the edges.
+       First value = top/bottom, second = left/right */
+}
+
+
+/* ----------------------------------------------------------
+   6. HEADER
+
+   The header contains my name, title, and profile photo.
+   I used position: relative + overflow: hidden to create
+   a decorative background circle using a ::before pseudo-element
+   without adding any extra HTML elements.
+   ---------------------------------------------------------- */
+
+header {
+    background-color: var(--color-surface);
+    /* White background to separate header from the cream page bg */
+
+    text-align: center;
+    /* Centers all content inside the header — name, title, image */
+
+    padding: var(--space-xl) var(--space-lg) var(--space-lg);
+    /* More padding on top than bottom to give the header breathing room.
+       Format: top | left&right | bottom */
+
+    border-bottom: 3px solid var(--color-accent);
+    /* A thick terracotta line at the bottom of the header —
+       visually separates it from the navigation */
+
+    position: relative;
+    /* Required so that the ::before pseudo-element (the decorative
+       background circle) can be positioned relative to the header */
+
+    overflow: hidden;
+    /* Clips the ::before circle so it doesn't spill outside the header */
+}
+
+/* Decorative background circle — purely visual, no content */
+header::before {
+    content: '';
+    /* ::before requires content to exist, even if empty.
+       Empty string '' creates the element with no text. */
+
+    position: absolute;
+    /* Positions the circle relative to the header (not the page).
+       This works because header has position: relative. */
+
+    top: -60px;
+    right: -60px;
+    /* Moves the circle to the top-right corner, partially off-screen.
+       Negative values move it outside the header boundary,
+       but overflow: hidden on header clips it. */
+
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    /* border-radius: 50% on equal width/height makes a perfect circle */
+
+    background: var(--color-accent-dim);
+    /* Pale terracotta color — subtle, not distracting */
+
+    opacity: 0.4;
+    /* Makes it semi-transparent so it blends with the background */
+
+    z-index: 0;
+    /* Sends the circle behind all other header content.
+       z-index controls stacking order — higher = in front */
+}
+
+header * {
+    position: relative;
+    z-index: 1;
+    /* All direct children of header (h1, p, img) are brought
+       in FRONT of the ::before circle using z-index: 1.
+       Without this, the circle could overlap the text/image. */
+}
+
+header h1 {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    /* clamp(min, preferred, max) — responsive font sizing.
+       - Never smaller than 2rem (32px)
+       - Tries to be 5% of the viewport width
+       - Never larger than 3.2rem (51px)
+       This means the name scales smoothly on all screen sizes. */
+
+    letter-spacing: -0.5px;
+    /* Slightly tightens the spacing between letters in the name.
+       Large headings often look better with tighter tracking. */
+
+    margin-bottom: var(--space-xs);
+    /* Small gap between the name and the job title below it */
+}
+
+header p {
+    font-family: var(--font-mono);
+    /* Uses the monospace font for the "Java Developer" subtitle —
+       gives it a technical/code-like feel */
+
+    font-size: 0.9rem;
+    letter-spacing: 3px;
+    /* Wide letter spacing on small uppercase text is a classic
+       design technique that makes labels look polished */
+
+    text-transform: uppercase;
+    /* Converts "Java Developer" to "JAVA DEVELOPER" */
+
+    color: var(--color-accent);
+    /* Terracotta color to match the accent theme */
+
+    margin-bottom: var(--space-lg);
+}
+
+/* Profile image styling */
+header img {
+    width: 150px;
+    height: 150px;
+    /* Fixed size — overrides the width/height set in HTML */
+
+    border-radius: 50%;
+    /* Makes the image circular */
+
+    object-fit: cover;
+    /* If the image isn't square, this crops it to fit the circle
+       without stretching or distorting it */
+
+    margin: 0 auto var(--space-md);
+    /* Centers the image (auto left/right) and adds space below it */
+
+    border: 4px solid var(--color-surface);
+    /* White ring directly around the image */
+
+    outline: 3px solid var(--color-accent);
+    /* Terracotta ring outside the white ring —
+       outline is drawn outside the border, creating a double-ring effect */
+
+    box-shadow: var(--shadow-lift);
+    /* Adds depth — the image appears to float slightly */
+}
+
+
+/* ----------------------------------------------------------
+   7. NAVIGATION
+
+   The nav is sticky so it follows the user as they scroll.
+   I used flexbox to display links horizontally.
+   The hover effect uses a ::after pseudo-element to create
+   a sliding underline — more elegant than a background change.
+   ---------------------------------------------------------- */
+
+nav {
+    background-color: var(--color-nav-bg);
+    /* Dark background — creates strong contrast with white nav text */
+
+    position: sticky;
+    /* The nav sticks to the top of the viewport as the user scrolls.
+       Unlike position: fixed, sticky only activates after
+       the element reaches the top — it behaves normally before that. */
+
+    top: 0;
+    /* Defines WHERE it sticks — at 0px from the top of the viewport */
+
+    z-index: 100;
+    /* Keeps the nav on top of all other content as you scroll.
+       Without this, sections could overlap/cover the nav. */
+
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    /* Shadow below the nav to visually separate it from page content */
+}
+
+nav ul {
+    display: flex;
+    /* Flexbox makes the list items sit side by side horizontally.
+       By default, flex arranges children in a row. */
+
+    justify-content: center;
+    /* Centers the nav links horizontally within the nav bar */
+
+    gap: 0;
+    /* No extra gap between items — the links have their own padding */
+
+    list-style: none;
+    /* Removes bullet points */
+
+    flex-wrap: wrap;
+    /* If the screen is too narrow to fit all links on one line,
+       they wrap to a second line instead of overflowing */
+}
+
+nav ul li a {
+    display: block;
+    /* Makes the entire padding area of the link clickable,
+       not just the text itself */
+
+    padding: var(--space-md) var(--space-lg);
+    /* Generous padding creates a large clickable area */
+
+    color: var(--color-nav-text);
+    /* Light/cream text on the dark nav background */
+
+    text-decoration: none;
+    /* Removes default underline from links */
+
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    /* Monospace, uppercase, wide-spaced styling for nav labels */
+
+    transition: color var(--transition), background-color var(--transition);
+    /* Smoothly animates both color and background on hover */
+
+    position: relative;
+    /* Required for the ::after underline pseudo-element to be
+       positioned relative to each individual link */
+}
+
+/* Sliding underline effect on hover */
+nav ul li a::after {
+    content: '';
+    /* Creates an invisible element below each nav link */
+
+    position: absolute;
+    bottom: 0;
+    /* Pins it to the very bottom of the link */
+
+    left: 50%;
+    transform: translateX(-50%);
+    /* Centers it horizontally under the link text.
+       left: 50% moves it to the center, then translateX(-50%)
+       shifts it back by half its own width — perfect centering. */
+
+    width: 0;
+    /* Starts with zero width — invisible */
+
+    height: 3px;
+    background-color: var(--color-accent);
+    /* A 3px tall terracotta line */
+
+    transition: width var(--transition);
+    /* Animates the width change smoothly */
+}
+
+nav ul li a:hover {
+    color: var(--color-accent);
+    /* Link text turns terracotta on hover */
+
+    background-color: rgba(255,255,255,0.04);
+    /* Very subtle light overlay on hover */
+}
+
+nav ul li a:hover::after {
+    width: 60%;
+    /* On hover, the underline grows from 0 to 60% of the link width.
+       Combined with the transition, this creates a slide-in effect. */
+}
+
+
+/* ----------------------------------------------------------
+   8. SECTIONS — SHARED STYLES
+
+   All five sections (About, Skills, Education, Projects, Contact)
+   share this common card style. I defined it once here so I
+   don't repeat the same padding/shadow/border in each section.
+   Individual sections override only what they need to change.
+   ---------------------------------------------------------- */
+
+main section {
+    background-color: var(--color-surface);
+    /* White card background against the cream page background */
+
+    margin-bottom: var(--space-xl);
+    /* Large gap between sections so the page doesn't feel cramped */
+
+    padding: var(--space-xl) var(--space-xl);
+    /* Generous inner spacing — content doesn't touch the card edges */
+
+    border: 1px solid var(--color-border);
+    /* Subtle border around each card */
+
+    border-radius: 2px;
+    /* Very slight rounding — softer than completely sharp corners */
+
+    box-shadow: var(--shadow-card);
+    /* Soft shadow underneath each card for depth */
+
+    border-left: 4px solid var(--color-accent);
+    /* This overrides the left side of the 1px border above with a
+       thick 4px terracotta stripe. Every section has this accent mark. */
+}
+
+main section h2 {
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+    /* Responsive heading size — scales between 1.4rem and 1.9rem */
+
+    margin-bottom: var(--space-lg);
+    /* Space between the section heading and its content */
+
+    padding-bottom: var(--space-sm);
+    /* Space between the heading text and the border below it */
+
+    border-bottom: 1px solid var(--color-border);
+    /* A thin line below each section heading — acts as a divider */
+
+    position: relative;
+    /* Needed for the ::before pseudo-element positioning */
+}
+
+/* Decorative dot before each section heading */
+main section h2::before {
+    content: '·';
+    /* Inserts a large middle-dot character before the heading text */
+
+    color: var(--color-accent);
+    /* Terracotta dot */
+
+    font-size: 1.8rem;
+    /* Larger than the heading text so it's visible */
+
+    margin-right: var(--space-sm);
+    /* Small gap between the dot and the heading text */
+
+    vertical-align: middle;
+    /* Aligns the dot vertically with the heading text */
+}
+
+
+/* ----------------------------------------------------------
+   9. ABOUT SECTION
+   ---------------------------------------------------------- */
+
+#about p {
+    font-size: 1.05rem;
+    /* Slightly larger than default body text — first impression matters */
+
+    max-width: 65ch;
+    /* ch is a unit based on the width of the '0' character.
+       65ch limits lines to ~65 characters — the optimal
+       line length for comfortable reading. */
+}
+
+#about strong {
+    color: var(--color-accent);
+    /* <strong> text in the about section gets the accent color —
+       makes key phrases like my name stand out in terracotta */
+
+    font-weight: 600;
+}
+
+#about em {
+    font-style: italic;
+    /* <em> stays italic as expected */
+
+    color: var(--color-ink);
+    /* Uses the darker ink color — italic is already distinct,
+       this ensures it's readable at full contrast */
+}
+
+
+/* ----------------------------------------------------------
+   10. SKILLS SECTION
+
+   The <details> element is a native HTML disclosure widget —
+   clicking the <summary> toggles the content open/closed.
+   I styled it to look like a proper UI dropdown component
+   rather than the plain default browser appearance.
+   ---------------------------------------------------------- */
+
+#skills details {
+    margin-bottom: var(--space-lg);
+    /* Space between the Technical Skills and Soft Skills dropdowns */
+
+    border: 1px solid var(--color-border);
+    /* Border around the entire dropdown */
+
+    border-radius: 2px;
+    overflow: hidden;
+    /* overflow: hidden clips the child content to the border-radius.
+       Without this, the inner content's background would show
+       sharp corners even though the container has rounded corners. */
+}
+
+#skills details summary {
+    padding: var(--space-md) var(--space-lg);
+    cursor: pointer;
+    /* Changes cursor to a hand/pointer — signals it's clickable */
+
+    background-color: var(--color-bg);
+    /* Cream background for the clickable header row */
+
+    list-style: none;
+    /* Removes the default browser triangle/arrow on the summary */
+
+    display: flex;
+    /* Flexbox so the custom arrow icon and text sit side by side */
+
+    align-items: center;
+    /* Vertically centers the arrow and text */
+
+    gap: var(--space-sm);
+    /* Space between the arrow icon and the label text */
+
+    transition: background-color var(--transition);
+    /* Smooth background color change on hover */
+
+    user-select: none;
+    /* Prevents text from being selected when clicking to toggle —
+       feels more like a button interaction */
+}
+
+/* Custom arrow icon — replaces the browser's default triangle */
+#skills details summary::before {
+    content: '▸';
+    /* Right-pointing triangle — indicates "click to expand" */
+
+    font-size: 0.75rem;
+    color: var(--color-accent);
+    /* Terracotta arrow */
+
+    transition: transform var(--transition);
+    /* Smoothly rotates when the dropdown opens */
+}
+
+/* When <details> is open, rotate the arrow to point downward */
+#skills details[open] summary::before {
+    transform: rotate(90deg);
+    /* [open] is an attribute selector — it targets <details open>.
+       When the user clicks to expand, the browser adds the open attribute,
+       which triggers this rotation. */
+}
+
+#skills details summary:hover {
+    background-color: var(--color-accent-dim);
+    /* Pale terracotta background on hover */
+}
+
+#skills details > ul {
+    padding: var(--space-md) var(--space-lg) var(--space-lg);
+    /* Inner padding for the list content inside the dropdown.
+       The > selector means DIRECT child only — not nested uls. */
+}
+
+/* Top-level skill category items (Programming Languages etc.) */
+#skills details > ul > li {
+    margin-bottom: var(--space-md);
+    font-weight: 600;
+    /* Category titles are semi-bold to stand out */
+
+    font-size: 1rem;
+    color: var(--color-ink);
+}
+
+/* Container for nested skill items under each category */
+#skills details > ul > li > ul {
+    margin-top: var(--space-sm);
+    padding-left: var(--space-md);
+    /* Indents skill items under their category title */
+}
+
+/* Individual skill items (Java ★★★★★ etc.) */
+#skills details > ul > li > ul > li {
+    font-weight: 300;
+    /* Light weight — visually different from bold category titles */
+
+    font-size: 0.95rem;
+    color: var(--color-ink-light);
+
+    line-height: 2;
+    /* Extra line height gives the list items breathing room
+       and makes the star ratings easy to scan */
+
+    padding: var(--space-xs) 0;
+
+    border-bottom: 1px dashed var(--color-border);
+    /* Dashed separator between skill items */
+}
+
+#skills details > ul > li > ul > li:last-child {
+    border-bottom: none;
+    /* Removes the border from the LAST skill item in each category
+       so there's no orphaned line at the bottom */
+}
+
+/* Soft Skills dropdown — different summary background to differentiate */
+#skills details:last-of-type summary {
+    background-color: var(--color-accent-dim);
+    /* last-of-type targets the second <details> element.
+       Pale terracotta header visually distinguishes it from
+       the Technical Skills dropdown. */
+}
+
+#skills details:last-of-type > ul > li {
+    font-weight: 300;
+    color: var(--color-ink-light);
+    border-bottom: 1px dashed var(--color-border);
+    padding: var(--space-xs) 0;
+    line-height: 2;
+    /* Soft skills are flat items (no sub-categories),
+       so they all get the same light styling */
+}
+
+#skills details:last-of-type > ul > li:last-child {
+    border-bottom: none;
+}
+
+
+/* ----------------------------------------------------------
+   11. EDUCATION TABLE
+
+   Tables need careful styling — browsers have opinionated
+   defaults for table borders that need to be reset first.
+   I used nth-child for alternating row colors which makes
+   long tables much easier to read at a glance.
+   ---------------------------------------------------------- */
+
+#education table {
+    width: 100%;
+    /* Table stretches to fill the full section width */
+
+    border-collapse: collapse;
+    /* By default, tables have double borders (each cell has its own border
+       + the table has a border, creating a gap between them).
+       collapse merges them into single clean borders. */
+
+    font-size: 0.95rem;
+    margin-top: var(--space-sm);
+}
+
+#education th {
+    background-color: var(--color-nav-bg);
+    /* Dark background for header row — matches the nav */
+
+    color: var(--color-nav-text);
+    /* Light text on dark background */
+
+    padding: var(--space-md) var(--space-lg);
+    /* Inner spacing inside header cells */
+
+    text-align: center;
+    /* Centers the column heading text */
+
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    /* Monospace uppercase styling — consistent with nav labels */
+
+    font-weight: 500;
+    border: 1px solid #333;
+}
+
+#education td {
+    padding: var(--space-md) var(--space-lg);
+    /* Inner spacing inside data cells */
+
+    border: 1px solid var(--color-border);
+    /* Light border between cells */
+
+    color: var(--color-ink-light);
+
+    vertical-align: middle;
+    /* Vertically centers cell content — important for cells that
+       use rowspan (like the school name spanning two rows) */
+}
+
+/* Alternating row colors — makes each row easy to distinguish */
+#education tr:nth-child(even) {
+    background-color: #faf8f5;
+    /* nth-child(even) targets rows 2, 4, 6...
+       Even rows get a very slightly off-white background */
+}
+
+#education tr:nth-child(odd) {
+    background-color: var(--color-surface);
+    /* nth-child(odd) targets rows 1, 3, 5...
+       Odd rows get pure white */
+}
+
+/* Row highlight on hover */
+#education tbody tr:hover {
+    background-color: var(--color-accent-dim);
+    /* Pale terracotta highlight when hovering a row —
+       helps track which row you're reading */
+
+    transition: background-color var(--transition);
+}
+
+
+/* ----------------------------------------------------------
+   12. PROJECTS SECTION
+
+   Each project is an <article> inside an <li> inside an <ol>.
+   I styled the articles as cards with a hover lift effect —
+   the card rises slightly when hovered using transform: translateY.
+   ---------------------------------------------------------- */
+
+#projects ol {
+    list-style: none;
+    /* Removes the default 1. 2. numbering from the ordered list */
+}
+
+#projects ol li {
+    margin-bottom: var(--space-xl);
+    /* Large gap between project cards */
+}
+
+#projects article {
+    padding: var(--space-lg);
+    /* Inner spacing inside each project card */
+
+    border: 1px solid var(--color-border);
+    border-radius: 2px;
+    background-color: var(--color-bg);
+    /* Cream background — slightly different from white section
+       background so the card is visually distinct */
+
+    transition: box-shadow var(--transition), transform var(--transition);
+    /* Both shadow and position animate smoothly on hover */
+}
+
+#projects article:hover {
+    box-shadow: var(--shadow-lift);
+    /* Stronger shadow on hover — reinforces the "lifting" feeling */
+
+    transform: translateY(-2px);
+    /* Moves the card 2px upward — subtle lift effect.
+       translateY moves along the vertical axis: negative = up */
+}
+
+#projects article h3 {
+    font-size: 1.2rem;
+    margin-bottom: var(--space-sm);
+    color: var(--color-ink);
+}
+
+#projects article p {
+    font-size: 0.95rem;
+    margin-bottom: var(--space-sm);
+}
+
+#projects article ul {
+    padding-left: var(--space-md);
+    /* Indents the bullet list inside project cards */
+
+    margin-bottom: var(--space-md);
+}
+
+#projects article ul li {
+    list-style: disc;
+    /* Re-adds bullet points — the global ul rule removed them,
+       so I explicitly add them back for project feature lists */
+
+    color: var(--color-ink-light);
+    font-size: 0.9rem;
+    line-height: 1.9;
+}
+
+#projects article ul li::marker {
+    color: var(--color-accent);
+    /* ::marker targets the bullet point character itself.
+       This changes bullet color to terracotta while
+       keeping the text color as the default grey. */
+}
+
+/* "View Source Code" link styled as a button */
+#projects article a {
+    display: inline-block;
+    /* inline-block lets me add padding/margin while keeping
+       it inline — not forcing a full-width block */
+
+    margin-top: var(--space-sm);
+    padding: var(--space-sm) var(--space-lg);
+    background-color: var(--color-ink);
+    /* Dark button background */
+
+    color: var(--color-nav-text);
+    /* Light text on dark button */
+
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    border-radius: 1px;
+
+    transition: background-color var(--transition), color var(--transition);
+    /* Smooth color transition on hover */
+}
+
+#projects article a:hover {
+    background-color: var(--color-accent);
+    /* Button turns terracotta on hover */
+
+    color: var(--color-surface);
+    /* Text turns white on hover */
+}
+
+
+/* ----------------------------------------------------------
+   13. CONTACT FORM
+
+   The form uses flexbox column layout so each field stacks
+   vertically. The key challenge is that flex-direction: column
+   makes ALL children stretch full width by default — which
+   breaks radio buttons and checkboxes. I fix this with
+   align-items: flex-start and then use align-self: stretch
+   on the inputs/labels that SHOULD be full width.
+   ---------------------------------------------------------- */
+
+#contact form {
+    display: flex;
+    flex-direction: column;
+    /* Stacks all form elements vertically */
+
+    gap: var(--space-md);
+    /* Consistent spacing between all form fields */
+
+    max-width: 560px;
+    /* Limits form width — very wide forms look unnatural */
+
+    align-items: flex-start;
+    /* IMPORTANT: stops radio buttons and checkboxes from being
+       stretched to full width (which is the default flex behavior).
+       flex-start means each child only takes as much width as it needs.
+       Full-width elements override this with align-self: stretch. */
+}
+
+/* Labels above each input field */
+#contact label {
+    display: block;
+    /* Makes labels take their own full line above the input */
+
+    align-self: stretch;
+    /* Overrides the form's flex-start so labels span the full width.
+       This ensures the label aligns with the full-width input below it. */
+
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    /* Monospace uppercase labels — consistent with other labels */
+
+    color: var(--color-ink);
+    font-weight: 500;
+    margin-bottom: var(--space-xs);
+    /* Small gap between label and its input */
+}
+
+/* Text input, email input, textarea, and select dropdowns */
+#contact input[type="text"],
+#contact input[type="email"],
+#contact textarea,
+#contact select {
+    display: block;
+    width: 100%;
+
+    align-self: stretch;
+    /* Overrides form's flex-start — these inputs should be full width */
+
+    padding: var(--space-md);
+    /* Inner spacing so text doesn't sit right against the border */
+
+    border: 1px solid var(--color-border);
+    border-radius: 1px;
+    background-color: var(--color-bg);
+    /* Cream background — slightly different from white surface */
+
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--color-ink);
+
+    transition: border-color var(--transition), box-shadow var(--transition);
+    /* Smooth transition when the input is focused */
+
+    outline: none;
+    /* Removes the default blue browser outline on focus.
+       I replace it with a custom focus style below. */
+}
+
+/* Focus state — when the user clicks into a field */
+#contact input[type="text"]:focus,
+#contact input[type="email"]:focus,
+#contact textarea:focus,
+#contact select:focus {
+    border-color: var(--color-accent);
+    /* Border turns terracotta when focused */
+
+    box-shadow: 0 0 0 3px var(--color-accent-dim);
+    /* A soft glow ring around the focused field —
+       more elegant than the default browser outline */
+}
+
+#contact textarea {
+    min-height: 120px;
+    /* Ensures the message box is tall enough to write comfortably */
+
+    resize: vertical;
+    /* Allows the user to drag the bottom edge to make it taller,
+       but NOT to resize it horizontally (which would break layout) */
+}
+
+/* Hide the <br> tags in the HTML form —
+   the flex gap handles all spacing, the <br> tags would add extra gaps */
+#contact br {
+    display: none;
+}
+
+/* Radio buttons and checkboxes */
+#contact input[type="radio"],
+#contact input[type="checkbox"] {
+    accent-color: var(--color-accent);
+    /* accent-color changes the browser's default blue tick/dot
+       color to our terracotta accent — simple one-line theming */
+
+    cursor: pointer;
+    /* Hand cursor when hovering */
+
+    margin-right: var(--space-xs);
+    /* Small gap between the circle/checkbox and its label text */
+}
+
+/* Labels that sit NEXT TO radio/checkbox inputs (Male, Female, Email, Call) */
+#contact label[for="male"],
+#contact label[for="female"],
+#contact label[for="emailContact"],
+#contact label[for="callContact"] {
+    display: inline;
+    /* Overrides the block display set on all labels above.
+       These labels need to sit inline next to their radio/checkbox,
+       not on their own line. */
+
+    align-self: auto;
+    /* Overrides align-self: stretch — these labels should only
+       take as much space as their text needs */
+
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    letter-spacing: 0;
+    text-transform: none;
+    font-weight: 300;
+    /* Plain body font styling — no uppercase, no wide spacing.
+       These are option labels, not form field labels. */
+
+    margin-right: var(--space-md);
+    /* Space between "Male" and the next radio button */
+
+    cursor: pointer;
+    /* Clicking the label text should also toggle the radio/checkbox */
+}
+
+/* Submit button */
+#contact input[type="submit"] {
+    display: block;
+    align-self: flex-start;
+    /* Stays left-aligned and only as wide as its text + padding.
+       Without this it would stretch to full form width. */
+
+    padding: var(--space-md) var(--space-xl);
+    /* Generous padding makes the button easy to click */
+
+    background-color: var(--color-accent);
+    color: var(--color-surface);
+    /* Terracotta button with white text */
+
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+
+    border: none;
+    /* Removes the default browser border on submit inputs */
+
+    border-radius: 1px;
+    cursor: pointer;
+    /* cursor: pointer is important here — browsers don't automatically
+       show a hand cursor on input[type="submit"] like they do on <button> */
+
+    transition: background-color var(--transition), transform var(--transition);
+    margin-top: var(--space-sm);
+}
+
+#contact input[type="submit"]:hover {
+    background-color: var(--color-ink);
+    /* Button turns dark on hover */
+
+    transform: translateY(-1px);
+    /* Subtle lift — same principle as the project card hover */
+}
+
+#contact input[type="submit"]:active {
+    transform: translateY(0);
+    /* When actually clicked (active state), the button drops back —
+       simulates a physical press/click feeling */
+}
+
+
+/* ----------------------------------------------------------
+   14. FOOTER
+   ---------------------------------------------------------- */
+
+footer {
+    background-color: var(--color-footer-bg);
+    /* Dark background — bookends the page visually with the dark nav */
+
+    color: #aaa;
+    text-align: center;
+    /* Centers all footer content */
+
+    padding: var(--space-xl) var(--space-lg);
+    /* Generous padding gives the footer a solid, weighty feel */
+}
+
+footer p {
+    color: #9a9a9f;
+    /* Slightly lighter grey for the copyright text */
+
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    /* Smaller than body text — footer info is secondary */
+
+    letter-spacing: 1.5px;
+    margin-bottom: var(--space-sm);
+}
+
+footer a {
+    color: var(--color-accent-dim);
+    /* Pale terracotta for the LinkedIn link — visible but not harsh
+       against the dark footer background */
+
+    transition: color var(--transition);
+}
+
+footer a:hover {
+    color: var(--color-surface);
+    /* Link turns white on hover — clear feedback on dark background */
+}
+
+
+/* ----------------------------------------------------------
+   15. RESPONSIVE DESIGN — MEDIA QUERIES
+
+   @media rules apply styles ONLY when the screen matches
+   the condition. max-width: 768px means "apply these styles
+   when the screen is 768px wide OR NARROWER".
+
+   I have two breakpoints:
+   - 768px: tablets and smaller (main layout adjustments)
+   - 480px: phones (fine-tuning for small screens)
+   ---------------------------------------------------------- */
+
+/* ---- TABLET AND BELOW (max-width: 768px) ---- */
+@media (max-width: 768px) {
+
+    main {
+        padding: var(--space-md);
+        /* Reduces side padding on smaller screens so content
+           has more horizontal room */
+    }
+
+    main section {
+        padding: var(--space-lg) var(--space-md);
+        /* Reduces section padding — on mobile, generous padding
+           wastes precious horizontal space */
+    }
+
+    /* Stack nav links vertically on small screens */
+    nav ul {
+        flex-direction: column;
+        /* Changes flex direction from row to column.
+           Nav links stack on top of each other on small screens. */
+
+        align-items: stretch;
+        /* Each nav link stretches to full width — creates a proper
+           mobile menu where links span edge to edge */
+    }
+
+    nav ul li a {
+        text-align: center;
+        /* Centers the link text in the full-width mobile nav item */
+
+        padding: var(--space-md);
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        /* Subtle separator between nav items in mobile view */
+    }
+
+    header img {
+        width: 110px;
+        height: 110px;
+        /* Slightly smaller profile image on tablet/mobile */
+    }
+
+    /* Education table — scrollable on mobile */
+    #education table {
+        display: block;
+        /* Changes the table to block display so overflow-x works.
+           Regular table display ignores overflow. */
+
+        overflow-x: auto;
+        /* When the table is wider than the screen, a horizontal
+           scrollbar appears instead of breaking the layout */
+
+        white-space: nowrap;
+        /* Prevents table cell content from wrapping to multiple lines.
+           The table stays wide and the user scrolls horizontally. */
+
+        -webkit-overflow-scrolling: touch;
+        /* Enables smooth momentum scrolling on iOS Safari.
+           Without this, horizontal scroll on iPhone feels jerky. */
+
+        border: 1px solid var(--color-border);
+    }
+
+    #education th,
+    #education td {
+        padding: var(--space-sm) var(--space-md);
+        /* Smaller padding inside cells on mobile */
+
+        font-size: 0.85rem;
+        /* Slightly smaller text inside cells on mobile */
+    }
+}
+
+/* ---- MOBILE (max-width: 480px) ---- */
+@media (max-width: 480px) {
+
+    header {
+        padding: var(--space-lg) var(--space-md);
+        /* Reduces header padding on phones */
+    }
+
+    main section h2 {
+        font-size: 1.3rem;
+        /* Ensures headings don't get too large on tiny phone screens */
+    }
+
+    #projects article {
+        padding: var(--space-md);
+        /* Smaller padding inside project cards on phones */
+    }
+
+    #contact form {
+        max-width: 100%;
+        /* Form takes full width on phones — the 560px limit
+           would waste space on a 360px wide phone screen */
+    }
+
+    #contact input[type="submit"] {
+        width: 100%;
+        text-align: center;
+        /* Submit button goes full width on phones —
+           large touch targets are important for mobile usability */
+    }
 }
